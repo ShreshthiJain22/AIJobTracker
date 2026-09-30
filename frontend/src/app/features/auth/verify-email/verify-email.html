@@ -1,0 +1,19 @@
+<div class="verify-container">
+    <div class="verify-card">
+      <div *ngIf="status() === 'loading'">
+        <p>Verifying your email...</p>
+      </div>
+  
+      <div *ngIf="status() === 'success'">
+        <h2>Verified</h2>
+        <p>{{ message() }}</p>
+        <button mat-flat-button color="primary" routerLink="/login">Go to Login</button>
+      </div>
+  
+      <div *ngIf="status() === 'error'">
+        <h2>Verification Failed</h2>
+        <p>{{ message() }}</p>
+        <button mat-flat-button color="primary" routerLink="/login">Go to Login</button>
+      </div>
+    </div>
+  </div>

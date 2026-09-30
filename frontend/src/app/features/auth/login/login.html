@@ -1,0 +1,29 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="verify-banner" *ngIf="showVerifyBanner()">
+      Account created. Please check your email and click the verification link before logging in.
+    </div>
+
+    <h1>Welcome back 🌸</h1>
+    <p class="subtitle">Log in to your Job Tracker</p>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" [(ngModel)]="email" name="email">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput [type]="hidePassword() ? 'password' : 'text'" [(ngModel)]="password" name="password">
+      <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <p class="forgot-link"><a routerLink="/forgot-password">Forgot password?</a></p>
+
+    <button mat-flat-button color="primary" class="full-width" (click)="onLogin()">Log In</button>
+
+    <p class="switch-link">Don't have an account? <a routerLink="/signup">Sign up</a></p>
+  </div>
+</div>

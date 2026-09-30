@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>{{ data?.application ? 'Edit' : 'Add' }} Application</h2>
+<div class="inline-error" *ngIf="errorMessage()">
+  {{ errorMessage() }}
+</div>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Company</mat-label>
+    <input matInput [(ngModel)]="application.company" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Role</mat-label>
+    <input matInput [(ngModel)]="application.role" required>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="application.status">
+      <mat-option *ngFor="let status of statusOptions" [value]="status">{{ status }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Applied Date</mat-label>
+    <input matInput type="date" [(ngModel)]="application.appliedDate" [max]="maxDate">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="showField('jdLink')">
+    <mat-label>Job Description Link</mat-label>
+    <input matInput [(ngModel)]="application.jdLink">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="showField('source')">
+    <mat-label>Source</mat-label>
+    <input matInput [(ngModel)]="application.source">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="showField('emailUsed')">
+    <mat-label>Email Used</mat-label>
+    <input matInput [(ngModel)]="application.emailUsed">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width" *ngIf="showField('contactPerson')">
+    <mat-label>Contact Person</mat-label>
+    <input matInput [(ngModel)]="application.contactPerson">
+  </mat-form-field>
+
+  <div class="toggle-row" *ngIf="showField('referralRequested')">
+    <span>Referral Requested</span>
+    <mat-slide-toggle [(ngModel)]="application.referralRequested"></mat-slide-toggle>
+  </div>
+
+  <div class="toggle-row" *ngIf="showField('referralRequested') && application.referralRequested">
+    <span>Referral Received</span>
+    <mat-slide-toggle [(ngModel)]="application.referralReceived"></mat-slide-toggle>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

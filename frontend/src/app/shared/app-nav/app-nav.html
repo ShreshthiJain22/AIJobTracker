@@ -1,0 +1,39 @@
+<nav class="top-nav">
+  <div class="nav-left">
+    <div class="nav-flower" aria-hidden="true">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <g class="flower-spin">
+          <ellipse cx="100" cy="50" rx="28" ry="45" fill="#e8c4c0" opacity="0.9"/>
+          <ellipse cx="100" cy="150" rx="28" ry="45" fill="#e8c4c0" opacity="0.9"/>
+          <ellipse cx="50" cy="100" rx="45" ry="28" fill="#d9a8a0" opacity="0.9"/>
+          <ellipse cx="150" cy="100" rx="45" ry="28" fill="#d9a8a0" opacity="0.9"/>
+          <ellipse cx="64" cy="64" rx="28" ry="45" fill="#f5e6e0" opacity="0.85" transform="rotate(45 64 64)"/>
+          <ellipse cx="136" cy="64" rx="28" ry="45" fill="#f5e6e0" opacity="0.85" transform="rotate(-45 136 64)"/>
+          <ellipse cx="64" cy="136" rx="28" ry="45" fill="#f5e6e0" opacity="0.85" transform="rotate(-45 64 136)"/>
+          <ellipse cx="136" cy="136" rx="28" ry="45" fill="#f5e6e0" opacity="0.85" transform="rotate(45 136 136)"/>
+          <circle cx="100" cy="100" r="22" fill="#b8827a"/>
+        </g>
+      </svg>
+    </div>
+    <div class="nav-title">Job Tracker</div>
+  </div>
+
+  <div class="nav-right">
+    <button class="avatar-btn" [matMenuTriggerFor]="settingsMenu" matTooltip="Settings">
+      <img [src]="avatarPath()" alt="Your avatar">
+    </button>
+    <mat-menu #settingsMenu="matMenu">
+      <button mat-menu-item (click)="goToGoals()">
+        <mat-icon>flag</mat-icon>
+        <span>Edit Goals & Reminders</span>
+      </button>
+      <button mat-menu-item (click)="goToColumns()">
+        <mat-icon>view_column</mat-icon>
+        <span>Choose Columns</span>
+      </button>
+    </mat-menu>
+    <button mat-icon-button (click)="onLogout()" matTooltip="Log out">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</nav>

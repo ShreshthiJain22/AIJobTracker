@@ -1,0 +1,118 @@
+:host {
+  display: block;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  min-width: 400px;
+}
+
+.onboarding-card {
+  padding: 8px 4px;
+  position: relative;
+
+  .subtitle {
+    color: #a17a72;
+    margin: 0 0 20px;
+    font-size: 0.9rem;
+  }
+
+  .goal-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .add-goal-btn {
+    display: block;
+    margin: 2px 0 20px;
+    padding: 4px 8px;
+    min-width: auto;
+    color: #b8827a;
+  }
+
+  .toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 16px 0 4px;
+    padding: 10px 14px;
+    background: #fdf6f4;
+    border-radius: 8px;
+    color: #4a3b38;
+    font-size: 0.9rem;
+  }
+  .avatar-picker {
+    margin-bottom: 20px;
+  
+    .avatar-label {
+      font-size: 0.85rem;
+      color: #a17a72;
+      margin: 0 0 10px;
+    }
+  
+    .avatar-options {
+      display: flex;
+      gap: 16px;
+    }
+  
+    .avatar-option {
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 4px;
+      background: #fdf6f4;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+  
+      img {
+        width: 64px;
+        height: 64px;
+        display: block;
+        border-radius: 12px;
+      }
+  
+      &:hover {
+        transform: scale(1.03);
+      }
+  
+      &.selected {
+        border-color: #d9a8a0;
+      }
+    }
+  }
+}
+
+::ng-deep .goals-dialog {
+  .mat-mdc-dialog-content {
+    max-height: 55vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d9a8a0 transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #d9a8a0;
+      border-radius: 4px;
+    }
+
+    mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+  }
+}
+
+mat-dialog-actions {
+  padding: 12px 20px 16px !important;
+  margin: 0 !important;
+}

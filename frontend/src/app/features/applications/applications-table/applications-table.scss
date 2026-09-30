@@ -1,0 +1,144 @@
+.app-shell {
+  min-height: 100vh;
+  background: #fdf9f7;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px 20px;
+  gap: 24px;
+}
+
+.quote-banner {
+  padding: 14px 20px;
+  background: #fff;
+  border: 1px solid #f0e4e0;
+  border-radius: 10px;
+  color: #8a6b64;
+  font-style: italic;
+  font-size: 0.95rem;
+  max-width: 600px;
+  flex-shrink: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.welcome-text {
+  flex-shrink: 0;
+  color: #4a3b38;
+  font-weight: 500;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.app-content {
+  padding: 0 32px 32px;
+}
+
+.table-wrapper {
+  padding: 24px;
+}
+
+.table-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  border: 1px solid #f0e4e0;
+}
+
+.applications-table {
+  width: 100%;
+  min-width: 900px;
+  border-radius: 12px;
+  overflow: hidden;
+
+  th {
+    background-color: #fdf6f4;
+    color: #7a5a52;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  td, th {
+    padding: 14px 16px;
+  }
+
+  tr:hover td {
+    background-color: #fdf9f7;
+  }
+}
+
+.empty-cell {
+  color: #c4a8a2;
+}
+
+.referral-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &.pending {
+    color: #b8825a;
+  }
+
+  &.received {
+    color: #6a9b7a;
+  }
+}
+
+a[mat-icon-button] {
+  color: #b8827a;
+}
+
+@media (max-width: 600px) {
+  .top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 14px 12px;
+    gap: 10px;
+  }
+
+  .quote-banner {
+    max-width: 100%;
+    font-size: 0.85rem;
+    padding: 10px 14px;
+  }
+
+  .welcome-text {
+    font-size: 1rem;
+  }
+
+  .app-content {
+    padding: 0 14px 20px;
+  }
+
+  .table-wrapper {
+    padding: 12px;
+  }
+
+  .table-header {
+    justify-content: stretch;
+
+    button {
+      width: 100%;
+    }
+  }
+}

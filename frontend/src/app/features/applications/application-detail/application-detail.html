@@ -1,0 +1,42 @@
+<div class="detail-panel">
+  <div class="close-icon" (click)="dialogRef.close()" role="button" aria-label="Close" tabindex="0" (keydown.enter)="dialogRef.close()">
+    <mat-icon>close</mat-icon>
+  </div>
+
+  <div class="panel-header">
+    <h2>{{ data.application.company }}</h2>
+    <p>{{ data.application.role }}</p>
+  </div>
+
+  <div class="panel-content">
+    <div *ngIf="loadingCaptions()" class="loading-state">
+      <mat-spinner diameter="32"></mat-spinner>
+      <p>Getting your progress ready...</p>
+    </div>
+
+    <ng-container *ngIf="!loadingCaptions()">
+      <div *ngIf="isRejected()" class="rejected-message">
+        <mat-icon>sentiment_dissatisfied</mat-icon>
+        <p>This one didn't work out — but the next application is one step closer to your dream. Keep going.</p>
+      </div>
+
+      <div *ngIf="!isRejected()" class="curve-timeline">
+        <div *ngFor="let stage of reachedStages; let i = index" class="curve-step">
+          <div class="connector-wrap" *ngIf="i > 0">
+            <svg class="connector" [class.flip]="i % 2 === 0" viewBox="0 0 100 60" preserveAspectRatio="none">
+              <path d="M20,0 C20,35 80,25 80,60" />
+            </svg>
+          </div>
+
+          <div class="step-row" [class.right]="i % 2 !== 0">
+            <div class="dot" [class.current]="isCurrent(stage)"></div>
+            <div class="step-card" [class.current]="isCurrent(stage)">
+              <h4>{{ stage }}</h4>
+              <p>{{ getCaption(i) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

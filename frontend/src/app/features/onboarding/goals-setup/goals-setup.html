@@ -1,0 +1,66 @@
+<div class="loading-state" *ngIf="loading()">
+  <mat-spinner diameter="32"></mat-spinner>
+</div>
+
+<div class="onboarding-card" *ngIf="!loading()">
+  <h2 mat-dialog-title>{{ isEditing() ? 'Edit Your Goals' : "Let's set your goals" }} 🌸</h2>
+
+  <mat-dialog-content>
+    <p class="subtitle">{{ isEditing() ? 'Update your goals, language, and reminder preferences.' : "Add 2 to 5 personal goals — we'll tie your reminders to these." }}</p>
+
+    <div class="avatar-picker">
+      <p class="avatar-label">Choose your avatar</p>
+      <div class="avatar-options">
+        <button type="button" class="avatar-option" [class.selected]="gender() === 'female'" (click)="selectGender('female')">
+          <img src="avatars/avatar-female.svg" alt="Female avatar">
+        </button>
+        <button type="button" class="avatar-option" [class.selected]="gender() === 'male'" (click)="selectGender('male')">
+          <img src="avatars/avatar-male.svg" alt="Male avatar">
+        </button>
+      </div>
+    </div>
+
+    <div *ngFor="let goal of goals(); let i = index; trackBy: trackByIndex" class="goal-row">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Goal {{ i + 1 }}</mat-label>
+        <input matInput [ngModel]="goal" (ngModelChange)="updateGoal(i, $event)" placeholder="e.g. Taking a solo international trip on my own money">
+      </mat-form-field>
+      <button mat-icon-button (click)="removeGoal(i)" *ngIf="goals().length > 2">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <button mat-button (click)="addGoal()" *ngIf="goals().length < 5" class="add-goal-btn">
+      <mat-icon>add</mat-icon> Add another goal
+    </button>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Reminder Language</mat-label>
+      <mat-select [ngModel]="reminderLanguage()" (ngModelChange)="reminderLanguage.set($event)">
+        <mat-option *ngFor="let lang of languageOptions" [value]="lang">{{ lang }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Reminder Frequency</mat-label>
+      <mat-select [ngModel]="reminderFrequency()" (ngModelChange)="reminderFrequency.set($event)">
+        <mat-option *ngFor="let freq of frequencyOptions" [value]="freq">{{ freq }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Reminder Time</mat-label>
+      <input matInput type="time" [ngModel]="reminderTime()" (ngModelChange)="reminderTime.set($event)">
+    </mat-form-field>
+
+    <div class="toggle-row">
+      <span>Enable Reminder Emails</span>
+      <mat-slide-toggle [ngModel]="remindersEnabled()" (ngModelChange)="remindersEnabled.set($event)"></mat-slide-toggle>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" *ngIf="isEditing()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="onSave()">{{ isEditing() ? 'Save Changes' : 'Save and Continue' }}</button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,40 @@
+:host {
+  display: block;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+  min-width: 400px;
+}
+
+.columns-card {
+  padding: 8px 4px;
+
+  .subtitle {
+    color: #a17a72;
+    margin: 0 0 16px;
+    font-size: 0.9rem;
+  }
+
+  .field-row {
+    padding: 8px 0;
+  }
+}
+
+mat-dialog-actions {
+  padding: 12px 20px 16px !important;
+  margin: 0 !important;
+}
+
+::ng-deep .columns-dialog {
+  .mat-mdc-dialog-content {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+}

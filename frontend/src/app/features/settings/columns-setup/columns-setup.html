@@ -1,0 +1,22 @@
+<div class="loading-state" *ngIf="loading()">
+  <mat-spinner diameter="32"></mat-spinner>
+</div>
+
+<div class="columns-card" *ngIf="!loading()">
+  <h2 mat-dialog-title>Choose Your Columns 🌸</h2>
+
+  <mat-dialog-content>
+    <p class="subtitle">Company, Role, Status, and Applied Date are always shown. Pick what else you want to track.</p>
+
+    <div *ngFor="let field of availableFields" class="field-row">
+      <mat-checkbox [checked]="isChecked(field.key)" (change)="toggleField(field.key)">
+        {{ field.label }}
+      </mat-checkbox>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" *ngIf="!isOnboarding()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="onSave()">{{ isOnboarding() ? 'Continue' : 'Save Changes' }}</button>
+  </mat-dialog-actions>
+</div>
