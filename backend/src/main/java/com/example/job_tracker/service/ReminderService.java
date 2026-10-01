@@ -103,7 +103,7 @@ public class ReminderService {
         }
 
         if (!dueActive.isEmpty()) {
-            sendActiveApplicationNudge(user, settings, dueActive, applications, today);
+            sendActiveApplicationNudge(user, settings, dueActive, applications, today, intervalDays);
             return;
         }
 
@@ -125,7 +125,7 @@ public class ReminderService {
             }
         }
 
-        return buildSituation(app, today, visibleFields) != null;
+       return buildSituation(app, today, intervalDays, visibleFields) != null;
     }
 
     private boolean isDueForMotivation(List<Application> rejectedApplications, LocalDate today, int intervalDays) {
@@ -143,13 +143,13 @@ public class ReminderService {
         return daysSinceLastNudge >= intervalDays;
     }
 
-    private String buildSituation(Application app, LocalDate today, List<String> visibleFields) {
-        long daysSinceApplied = ChronoUnit.DAYS.between(app.getAppliedDate(), today);
+    private String buildSituation(Application app, LocalDate today, int intervalDays, List<String> visibleFields) {
+            long daysSinceApplied = ChronoUnit.DAYS.between(app.getAppliedDate(), today);
         boolean tracksReferral = visibleFields != null && visibleFields.contains("referralRequested");
         String status = app.getStatus();
 
         if (tracksReferral) {
-            if (!app.isReferralRequested() && daysSinceApplied >= 3) {
+            if (!app.isReferralRequested() && daysSinceApplied >= intervalDays) {
                 return "hasn't asked for a referral yet at " + app.getCompany() + ", applied " + daysSinceApplied + " days ago";
             } else if (app.isReferralRequested() && !app.isReferralReceived()) {
                 return "requested a referral at " + app.getCompany() + " but hasn't heard back yet";
@@ -159,16 +159,16 @@ public class ReminderService {
         }
 
         if ("Applied".equals(status)) {
-            if (daysSinceApplied < 3) {
-                return null;
-            }
+           if (daysSinceApplied < intervalDays) {
+    return null;
+}
             return "applied to " + app.getCompany() + " " + daysSinceApplied + " days ago and hasn't heard back — worth a polite follow-up";
         }
 
         if ("Interview".equals(status)) {
-            if (daysSinceApplied < 5) {
-                return null;
-            }
+           if (daysSinceApplied < Math.max(intervalDays, 5)) {
+    return null;
+}
             return "interviewed at " + app.getCompany() + " a while back and is still waiting on the result — a good time to prep for the next round or follow up";
         }
 
@@ -179,11 +179,9 @@ public class ReminderService {
         return "should check in and update the status for " + app.getCompany() + ", applied " + daysSinceApplied + " days ago";
     }
 
-private void sendActiveApplicationNudge(User user, UserSettings settings, List<Application> dueApplications, List<Application> allApplications, LocalDate today) {
-    List<String> visibleFields = settings.getVisibleFields();
+private void sendActiveApplicationNudge(User user, UserSettings settings, List<Application> dueApplications, List<Application> allApplications, LocalDate today, int intervalDays) {    List<String> visibleFields = settings.getVisibleFields();
     Application focusApp = dueApplications.get(0);
-    String situation = buildSituation(focusApp, today, visibleFields);
-
+String situation = buildSituation(focusApp, today, intervalDays, visibleFields);
     List<String> goals = settings.getGoals();
     long daysSinceApplied = focusApp.getAppliedDate() != null
         ? ChronoUnit.DAYS.between(focusApp.getAppliedDate(), today)
