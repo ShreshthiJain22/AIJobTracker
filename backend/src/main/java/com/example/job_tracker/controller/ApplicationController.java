@@ -46,8 +46,7 @@ public class ApplicationController {
 
 
 
-    private final Map<Long, List<String>> captionCache = new HashMap<>();
-
+private final Map<String, List<String>> captionCache = new HashMap<>();
     private final Map<String, String> cachedQuotesByLanguage = new HashMap<>();
 
     private void validateApplication(Application application) {
@@ -175,59 +174,139 @@ public String getQuoteOfTheDay(Authentication authentication) {
    
     
 
-   @GetMapping("/{id}/stage-captions")
+  @GetMapping("/{id}/stage-captions")
 public List<String> getStageCaptions(@PathVariable Long id, Authentication authentication) {
-    if (captionCache.containsKey(id)) {
-        return captionCache.get(id);
-    }
 
     Application app = applicationRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Application not found"));
 
     String email = authentication.getName();
+
     User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // Security: make sure this application belongs to the logged-in user
+    if (!app.getUser().getId().equals(user.getId())) {
+        throw new RuntimeException("You do not have permission to view this application");
+    }
 
     UserSettings settings = userSettingsRepository.findByUserId(user.getId())
             .orElse(null);
 
     List<String> goals = settings != null ? settings.getGoals() : List.of();
-    String language = settings != null ? settings.getReminderLanguage() : "Hinglish";
-    String gender = settings != null && settings.getGender() != null ? settings.getGender() : "female";
-    List<String> visibleFields = settings != null ? settings.getVisibleFields() : null;
-    boolean tracksReferral = visibleFields != null && visibleFields.contains("referralRequested");
+
+    String language = settings != null && settings.getReminderLanguage() != null
+            ? settings.getReminderLanguage()
+            : "Hinglish";
+
+    String gender = settings != null && settings.getGender() != null
+            ? settings.getGender()
+            : "female";
+
+    List<String> visibleFields = settings != null
+            ? settings.getVisibleFields()
+            : null;
+
+    boolean tracksReferral = visibleFields != null
+            && visibleFields.contains("referralRequested");
+
+    /*
+     * Cache must depend on language and gender.
+     * Otherwise captions generated in Hindi can be returned
+     * even after the user switches to Hinglish.
+     */
+    String cacheKey = id + "-" + language + "-" + gender;
+
+    if (captionCache.containsKey(cacheKey)) {
+        return captionCache.get(cacheKey);
+    }
 
     List<String> stages = tracksReferral
-        ? List.of("Applied", "Referral Requested", "Interview", "Offer")
-        : List.of("Applied", "Interview", "Offer");
+            ? List.of("Applied", "Referral Requested", "Interview", "Offer")
+            : List.of("Applied", "Interview", "Offer");
 
     int currentIndex = stages.indexOf(app.getStatus());
-    if (currentIndex < 0) currentIndex = 0;
+
+    if (currentIndex < 0) {
+        currentIndex = 0;
+    }
+
     List<String> reachedStages = stages.subList(0, currentIndex + 1);
 
     StringBuilder promptBuilder = new StringBuilder();
-    promptBuilder.append("Write in ").append(language).append(". This is for a ").append(gender).append(" job seeker. ")
+
+    promptBuilder.append("You are writing short motivational captions for a job seeker. ");
+
+    if ("Hinglish".equalsIgnoreCase(language)) {
+
+        promptBuilder.append("""
+                Write in Hinglish using English/Roman script ONLY.
+                Use Hindi words written with English letters, like people commonly
+                text on WhatsApp.
+                DO NOT use Devanagari/Hindi script.
+                Example: "Bas ek step aur, tum kar loge!" or
+                "Interview tak pahunch gaye, ab bas confidence rakho!"
+                """);
+
+    } else if ("Hindi".equalsIgnoreCase(language)) {
+
+        promptBuilder.append("""
+                Write in Hindi using Devanagari script.
+                """);
+
+    } else {
+
+        promptBuilder.append("Write in ").append(language).append(". ");
+    }
+
+    promptBuilder
+            .append("This is for a ").append(gender).append(" job seeker. ")
             .append("For a job application to ").append(app.getCompany())
             .append(" for the role ").append(app.getRole())
             .append(", write one short, warm, motivating sentence for each stage below, ")
-            .append("each tying the stage to the given personal goal. If writing in Hindi, use grammar matching a ")
-            .append(gender).append(" subject. ")
-            .append("Reply with exactly one line per stage, no numbering, no extra text.\n");
+            .append("each tying the stage to the given personal goal. ");
+
+    if ("Hindi".equalsIgnoreCase(language)
+            || "Hinglish".equalsIgnoreCase(language)) {
+        promptBuilder.append("Use grammar naturally matching a ")
+                .append(gender)
+                .append(" subject. ");
+    }
+
+    promptBuilder.append("""
+            Keep each caption short and natural.
+            Do not use corporate language.
+            Reply with exactly one line per stage, no numbering, no extra text.
+            """);
 
     for (int i = 0; i < reachedStages.size(); i++) {
-        String goal = goals.isEmpty() ? "their dreams" : goals.get(i % goals.size());
-        promptBuilder.append("Stage: ").append(reachedStages.get(i)).append(", Goal: ").append(goal).append("\n");
+
+        String goal = goals.isEmpty()
+                ? "their dreams"
+                : goals.get(i % goals.size());
+
+        promptBuilder
+                .append("Stage: ")
+                .append(reachedStages.get(i))
+                .append(", Goal: ")
+                .append(goal)
+                .append("\n");
     }
 
     String result = groqService.generateNudge(promptBuilder.toString());
+
     List<String> captions;
+
     if (result != null) {
-        captions = Arrays.asList(result.split("\n"));
+        captions = Arrays.asList(result.split("\\r?\\n"));
     } else {
-        captions = reachedStages.stream().map(s -> "One step closer to your goal.").toList();
+        captions = reachedStages.stream()
+                .map(s -> "One step closer to your goal.")
+                .toList();
     }
 
-    captionCache.put(id, captions);
+    captionCache.put(cacheKey, captions);
+
     return captions;
 }
     public void clearCaptionCache() {
